@@ -1,38 +1,45 @@
 pipeline {
-    agent {
-        docker {
-            image 'hashicorp/terraform:1.6'
-            args '-u root'
-        }
-    }
+    agent any
 
     environment {
         AWS_DEFAULT_REGION = "ap-south-1"
+        TF_IN_AUTOMATION = "true"
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                checkout scm
+                git credentialsId: 'github-creds',
+                    url: 'https://github.com/Prasadb21/devops-terraform-jenkins.git',
+                    branch: 'main'
             }
         }
 
         stage('Terraform Init') {
             steps {
-                sh 'cd envs/dev && terraform init'
+                sh '''
+                    cd envs/dev
+                    terraform init
+                '''
             }
         }
 
         stage('Terraform Plan') {
             steps {
-                sh 'cd envs/dev && terraform plan'
+                sh '''
+                    cd envs/dev
+                    terraform plan
+                '''
             }
         }
 
         stage('Terraform Apply') {
             steps {
-                sh 'cd envs/dev && terraform apply -auto-approve'
+                sh '''
+                    cd envs/dev
+                    terraform apply -auto-approve
+                '''
             }
         }
     }
