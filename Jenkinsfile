@@ -1,7 +1,17 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'hashicorp/terraform:1.6'
+            args '-u root'
+        }
+    }
+
+    environment {
+        AWS_DEFAULT_REGION = "ap-south-1"
+    }
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
