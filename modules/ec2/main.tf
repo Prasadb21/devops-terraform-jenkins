@@ -6,15 +6,27 @@ resource "aws_instance" "this" {
   key_name               = "terraform-key-v2"
 
   user_data = <<EOF
-#!/bin/bash
-yum update -y
-amazon-linux-extras install docker -y
-systemctl start docker
-systemctl enable docker
-usermod -aG docker ec2-user
-curl -L "https://github.com/docker/compose/releases/download/2.25.0/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
-EOF
+  #!/bin/bash
+  set -e
+
+  # Update OS
+  yum update -y
+
+  # Install Docker
+  amazon-linux-extras install docker -y
+  systemctl start docker
+  systemctl enable docker
+  usermod -aG docker ec2-user
+
+  # Install docker-compose
+  curl -L "https://github.com/docker/compose/releases/download/v2.25.0/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose
+  chmod +x /usr/local/bin/docker-compose
+
+  # Verify
+  docker --version
+  docker-compose --version
+  EOF
+
 
   lifecycle {
     ignore_changes = [
