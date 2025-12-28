@@ -46,16 +46,23 @@ pipeline {
 
         stage('Deploy To EC2') {
             steps {
-                sh """
-                ssh -o StrictHostKeyChecking=no -i keys/terraform-key-v2.pem ec2-user@${EC2_IP} '
-                  sudo yum install git -y
-                  git clone https://github.com/Prasadb21/devops-terraform-jenkins.git app || cd app && git pull
-                  cd app
-                  docker-compose down || true
-                  docker-compose up -d --build
-                '
-                """
+                sshagent(['ec2-ssh-key']) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ec2-user@${EC2_IP} '
+                    sudo yum install git -y
+                    if [ ! -d app ]; then
+                        git clone https://github.com/Prasadb21/devops-terraform-jenkins.git app
+                    else
+                        cd app && git pull
+                    fi
+                    cd app
+                    docker-compose down || true
+                    docker-compose up -d --build
+                    '
+                    """
+                }
             }
         }
+
     }
 }
