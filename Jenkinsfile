@@ -31,6 +31,15 @@ pipeline {
             }
         }
 
+        stage('Test SSH') {
+        steps {
+            sshagent(['terraform-key-v2']) {
+            sh "ssh -o StrictHostKeyChecking=no ec2-user@${EC2_IP} hostname"
+            }
+        }
+        }
+
+
         stage('Get EC2 IP') {
             steps {
                 script {
