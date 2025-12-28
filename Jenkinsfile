@@ -64,7 +64,7 @@ pipeline {
 
         stage('Deploy To EC2') {
             steps {
-                sshagent(['ec2-ssh-key']) {
+                sshagent(['terraform-key-v2']) {
                     sh """
                     ssh -o StrictHostKeyChecking=no ec2-user@${EC2_IP} '
                     sudo yum install git -y
