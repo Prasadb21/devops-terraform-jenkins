@@ -69,12 +69,12 @@ pipeline {
                     sh """
                     ssh -o StrictHostKeyChecking=no ec2-user@${EC2_IP} '
                     sudo yum install git -y
-                    if [ ! -d app ]; then
+                    if [ ! -d to-do-list ]; then
                         git clone https://github.com/Prasadb21/devops-terraform-jenkins.git app
                     else
-                        cd app && git pull
+                        cd to-do-list && git pull
                     fi
-                    cd app
+                    cd to-do-list
                     docker-compose down || true
                     docker-compose up -d --build
                     '
