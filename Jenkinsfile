@@ -55,7 +55,7 @@ pipeline {
 
         stage('Wait for EC2 SSH') {
         steps {
-            sshagent(['ec2-user']) {
+            sshagent(['terraform-key-v2']) {
             sh "ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 ec2-user@${EC2_IP} echo SSH Ready"
             }
         }
