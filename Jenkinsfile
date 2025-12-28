@@ -54,19 +54,11 @@ pipeline {
         }
 
         stage('Wait for EC2 SSH') {
-            steps {
-                script {
-                    sh """
-                    for i in {1..30}; do
-                    echo "Waiting for EC2 SSH..."
-                    ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 ec2-user@${EC2_IP} 'echo SSH Ready' && exit 0
-                    sleep 10
-                    done
-                    echo "EC2 did not become ready in time"
-                    exit 1
-                    """
-                }
+        steps {
+            sshagent(['ec2-user']) {
+            sh "ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 ec2-user@${EC2_IP} echo SSH Ready"
             }
+        }
         }
 
 
