@@ -74,7 +74,7 @@ pipeline {
                     else
                         cd app && git pull
                     fi
-                    cd app/to-do-list
+                    cd app/to-do-list || cd to-do-list
                     docker-compose down || true
                     docker-compose up -d --build
                     '
