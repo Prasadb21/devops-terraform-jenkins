@@ -75,6 +75,11 @@ pipeline {
                         cd app && git pull
                     fi
                     cd app/to-do-list || cd to-do-list
+                    # Normalize folder names
+                    if [ -d Backend ]; then mv Backend backend; fi
+                    if [ -d Frontend ]; then mv Frontend frontend; fi
+
+                    ls -l
                     docker-compose down || true
                     docker-compose up -d --build
                     '
