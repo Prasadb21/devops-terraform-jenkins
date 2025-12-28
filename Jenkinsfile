@@ -44,6 +44,26 @@ pipeline {
             }
         }
 
+        stage('Wait for EC2 SSH') {
+            steps {
+                script {
+                    sh """
+                    for i in {1..30}; do
+                    echo "Waiting for EC2 SSH..."
+                    if nc -z ${EC2_IP} 22; then
+                        echo "SSH is up"
+                        exit 0
+                    fi
+                    sleep 10
+                    done
+                    echo "EC2 did not become ready in time"
+                    exit 1
+                    """
+                }
+            }
+        }
+
+
         stage('Deploy To EC2') {
             steps {
                 sshagent(['ec2-ssh-key']) {
