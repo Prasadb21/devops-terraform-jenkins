@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:7.0
+    container_name: taskflow-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - taskflow-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: taskflow-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongo:27017/taskflow
+      - JWT_SECRET=your-super-secret-jwt-key-change-this
+      - PORT=5000
+    depends_on:
+      - mongo
+    networks:
+      - taskflow-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: taskflow-frontend
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - taskflow-network
+
+volumes:
+  mongo-data:
+
+networks:
+  taskflow-network:
+    driver: bridge

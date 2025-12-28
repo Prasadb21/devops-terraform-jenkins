@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow Pro - Advanced Task Management</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content auth-modal">
+            <h2 id="authTitle">Login to TaskFlow</h2>
+            <form id="authForm">
+                <div id="nameField" class="form-group" style="display: none;">
+                    <input type="text" id="name" placeholder="Full Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" id="authBtn">Login</button>
+            </form>
+            <p class="auth-switch">
+                <span id="authSwitchText">Don't have an account?</span>
+                <a href="#" id="authSwitchLink">Sign Up</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app" style="display: none;">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="menu-btn" id="menuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="logo">
+                    <i class="fas fa-check-circle"></i> TaskFlow Pro
+                </h1>
+            </div>
+            <div class="navbar-center">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search tasks...">
+                </div>
+            </div>
+            <div class="navbar-right">
+                <button class="icon-btn" id="voiceBtn" title="Voice Input">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <button class="icon-btn" id="notificationBtn">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
+                </button>
+                <div class="user-menu">
+                    <button class="user-avatar" id="userAvatar">
+                        <span id="userInitials">U</span>
+                    </button>
+                    <div class="dropdown-menu" id="userDropdown">
+                        <a href="#" id="settingsLink"><i class="fas fa-cog"></i> Settings</a>
+                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="app-container">
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-header">
+                    <button class="btn btn-primary btn-block" id="newTaskBtn">
+                        <i class="fas fa-plus"></i> New Task
+                    </button>
+                </div>
+
+                <div class="sidebar-menu">
+                    <a href="#" class="menu-item active" data-view="dashboard">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a>
+                    <a href="#" class="menu-item" data-view="tasks">
+                        <i class="fas fa-list"></i> All Tasks
+                    </a>
+                    <a href="#" class="menu-item" data-view="kanban">
+                        <i class="fas fa-columns"></i> Kanban Board
+                    </a>
+                    <a href="#" class="menu-item" data-view="pomodoro">
+                        <i class="fas fa-clock"></i> Pomodoro Timer
+                    </a>
+                    <a href="#" class="menu-item" data-view="analytics">
+                        <i class="fas fa-chart-bar"></i> Analytics
+                    </a>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="section-header">
+                        <h3>Categories</h3>
+                        <button class="icon-btn" id="addCategoryBtn">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    <div id="categoryList" class="category-list"></div>
+                </div>
+
+                <div class="sidebar-section">
+                    <div class="section-header">
+                        <h3>Quick Filters</h3>
+                    </div>
+                    <a href="#" class="filter-item" data-filter="today">
+                        <i class="fas fa-calendar-day"></i> Today
+                    </a>
+                    <a href="#" class="filter-item" data-filter="important">
+                        <i class="fas fa-star"></i> Important
+                    </a>
+                    <a href="#" class="filter-item" data-filter="overdue">
+                        <i class="fas fa-exclamation-circle"></i> Overdue
+                    </a>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Dashboard View -->
+                <div id="dashboardView" class="view active">
+                    <div class="page-header">
+                        <h2>Dashboard</h2>
+                        <p>Welcome back, <span id="userName">User</span>!</p>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon purple">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalTasks">0</h3>
+                                <p>Total Tasks</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="completedTasks">0</h3>
+                                <p>Completed</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon orange">
+                                <i class="fas fa-spinner"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="pendingTasks">0</h3>
+                                <p>Pending</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon red">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="urgentTasks">0</h3>
+                                <p>Urgent</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-content">
+                        <div class="tasks-section">
+                            <h3>Today's Tasks</h3>
+                            <div id="todayTasks" class="task-list"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tasks View -->
+                <div id="tasksView" class="view">
+                    <div class="page-header">
+                        <h2>All Tasks</h2>
+                        <div class="view-controls">
+                            <select id="statusFilter" class="filter-select">
+                                <option value="">All Status</option>
+                                <option value="todo">To Do</option>
+                                <option value="in-progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                            <select id="priorityFilter" class="filter-select">
+                                <option value="">All Priority</option>
+                                <option value="urgent">Urgent</option>
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="allTasks" class="task-list"></div>
+                </div>
+
+                <!-- Kanban View -->
+                <div id="kanbanView" class="view">
+                    <div class="page-header">
+                        <h2>Kanban Board</h2>
+                    </div>
+                    <div class="kanban-board">
+                        <div class="kanban-column">
+                            <div class="column-header">
+                                <h3>To Do</h3>
+                                <span class="task-count" id="todoCount">0</span>
+                            </div>
+                            <div class="column-content" id="todoColumn" data-status="todo"></div>
+                        </div>
+                        <div class="kanban-column">
+                            <div class="column-header">
+                                <h3>In Progress</h3>
+                                <span class="task-count" id="inProgressCount">0</span>
+                            </div>
+                            <div class="column-content" id="inProgressColumn" data-status="in-progress"></div>
+                        </div>
+                        <div class="kanban-column">
+                            <div class="column-header">
+                                <h3>Completed</h3>
+                                <span class="task-count" id="completedCount">0</span>
+                            </div>
+                            <div class="column-content" id="completedColumn" data-status="completed"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pomodoro View -->
+                <div id="pomodoroView" class="view">
+                    <div class="page-header">
+                        <h2>Pomodoro Timer</h2>
+                    </div>
+                    <div class="pomodoro-container">
+                        <div class="pomodoro-timer">
+                            <div class="timer-circle">
+                                <svg width="300" height="300">
+                                    <circle cx="150" cy="150" r="140" class="timer-bg"></circle>
+                                    <circle cx="150" cy="150" r="140" class="timer-progress" id="timerProgress"></circle>
+                                </svg>
+                                <div class="timer-display">
+                                    <h1 id="timerDisplay">25:00</h1>
+                                    <p id="timerMode">Focus Time</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pomodoro-controls">
+                            <button class="btn btn-large btn-primary" id="startTimer">
+                                <i class="fas fa-play"></i> Start
+                            </button>
+                            <button class="btn btn-large" id="resetTimer">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                        </div>
+                        <div class="pomodoro-stats">
+                            <div class="stat">
+                                <i class="fas fa-check-circle"></i>
+                                <span id="pomodoroCount">0</span> Sessions Today
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics View -->
+                <div id="analyticsView" class="view">
+                    <div class="page-header">
+                        <h2>Analytics & Insights</h2>
+                    </div>
+                    <div class="analytics-grid">
+                        <div class="chart-card">
+                            <h3>Tasks by Priority</h3>
+                            <canvas id="priorityChart"></canvas>
+                        </div>
+                        <div class="chart-card">
+                            <h3>Completion Rate</h3>
+                            <div class="completion-chart">
+                                <div class="progress-ring">
+                                    <svg width="200" height="200">
+                                        <circle cx="100" cy="100" r="90" class="progress-bg"></circle>
+                                        <circle cx="100" cy="100" r="90" class="progress-bar" id="completionCircle"></circle>
+                                    </svg>
+                                    <div class="progress-text">
+                                        <h2 id="completionRate">0%</h2>
+                                        <p>Complete</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Task Modal -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content task-modal">
+            <div class="modal-header">
+                <h2 id="taskModalTitle">New Task</h2>
+                <button class="close-btn" id="closeTaskModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="taskForm">
+                <input type="hidden" id="taskId">
+                <div class="form-group">
+                    <label>Task Title</label>
+                    <input type="text" id="taskTitle" placeholder="Enter task title..." required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="taskDescription" rows="3" placeholder="Add description..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Priority</label>
+                        <select id="taskPriority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="taskCategory">
+                            <option value="">No Category</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Due Date</label>
+                        <input type="datetime-local" id="taskDueDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="taskStatus">
+                            <option value="todo">To Do</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Tags (comma separated)</label>
+                    <input type="text" id="taskTags" placeholder="work, urgent, meeting">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" id="cancelTaskBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveTaskBtn">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content category-modal">
+            <div class="modal-header">
+                <h2>New Category</h2>
+                <button class="close-btn" id="closeCategoryModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="categoryForm">
+                <div class="form-group">
+                    <label>Category Name</label>
+                    <input type="text" id="categoryName" placeholder="e.g., Work, Personal" required>
+                </div>
+                <div class="form-group">
+                    <label>Color</label>
+                    <input type="color" id="categoryColor" value="#3B82F6">
+                </div>
+                <div class="form-group">
+                    <label>Icon (emoji)</label>
+                    <input type="text" id="categoryIcon" placeholder="📋" maxlength="2">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" id="cancelCategoryBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
