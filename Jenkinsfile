@@ -50,10 +50,7 @@ pipeline {
                     sh """
                     for i in {1..30}; do
                     echo "Waiting for EC2 SSH..."
-                    if nc -z ${EC2_IP} 22; then
-                        echo "SSH is up"
-                        exit 0
-                    fi
+                    ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 ec2-user@${EC2_IP} 'echo SSH Ready' && exit 0
                     sleep 10
                     done
                     echo "EC2 did not become ready in time"
@@ -62,6 +59,7 @@ pipeline {
                 }
             }
         }
+
 
 
         stage('Deploy To EC2') {
