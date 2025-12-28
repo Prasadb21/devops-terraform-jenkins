@@ -5,9 +5,9 @@ resource "aws_instance" "this" {
   vpc_security_group_ids = [aws_security_group.ssh.id]
   key_name               = "terraform-key-v2"
 
-  lifecycle {
-  create_before_destroy = true
-    }
+  # lifecycle {
+  # create_before_destroy = true
+  #   }
 
 
   tags = {
